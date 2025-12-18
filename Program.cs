@@ -4,17 +4,17 @@ using EF.Core.Seyid.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 AppDbConext context = new AppDbConext();
-    Console.WriteLine("1.Group yarat");
-    Console.WriteLine("2.Grouplari goster");
-    Console.WriteLine("3.Group sil");
-    Console.WriteLine("4.Group Update");
-    Console.WriteLine("5.Student yarat");
-    Console.WriteLine("6.Studentleri goster");
-    Console.WriteLine("7.Student sil");
-    Console.WriteLine("8.Student Update");
+EVVEL:
+Console.WriteLine("1.Group yarat");
+Console.WriteLine("2.Grouplari goster");
+Console.WriteLine("3.Group sil");
+Console.WriteLine("4.Group Update");
+Console.WriteLine("5.Student yarat");
+Console.WriteLine("6.Studentleri goster");
+Console.WriteLine("7.Student sil");
+Console.WriteLine("8.Student Update");
 while (true)
 {
-EVVEL:
 
     Console.Write("Secim: ");
     string? Input = Console.ReadLine();
@@ -22,12 +22,13 @@ EVVEL:
     switch (Input)
     {
         case "1":
+        group:
             Console.Write("Group adi daxil et: ");
             string? groupname = Console.ReadLine();
             if (groupname == null)
             {
                 Console.WriteLine("Zehmet olmasa duzgun deyer daxil et!");
-                break;
+                goto group;
             }
             Group group = new Group()
             {
@@ -118,9 +119,8 @@ EVVEL:
             break;
 
         case "7":
-            var students1 = context.Students.Include(s => s.Group).ToList();
-            students1.ForEach(student => Console.WriteLine(student));
 
+            AllStudent(context);
             Console.Write("Student Id: ");
             string? sidInput = Console.ReadLine();
             bool isSid = int.TryParse(sidInput, out int sid);
@@ -139,20 +139,33 @@ EVVEL:
             context.SaveChanges();
             Console.WriteLine("Student silindi.");
             break;
-            case "8":
-              AllStudent(context);
-
-              int newAge=GettAge();
-              decimal newGrade=GettGrade();
-              string newStudentSurname=GettSurname();
-              string newStudentName=GettName();
-              int newGroupId=GetGroupId(context);
-              context.SaveChanges();
-              Console.WriteLine("Student Ugurla deyisdirildi.");
+        case "8":
+            AllStudent(context);
+            Console.Write("Student Id: ");
+            string? UpdateidInput = Console.ReadLine();
+            bool isUpdateSid = int.TryParse(UpdateidInput, out int Updatesid);
+            if (!isUpdateSid)
+            {
+                Console.WriteLine("Zehmet olmasa duzgun deyer daxil et!");
                 break;
+            }
+            Student? UpdateStudent = context.Students.FirstOrDefault(s => s.Id == Updatesid);
+            if (UpdateStudent is null)
+            {
+                Console.WriteLine("Update elemek istediyiniz Student yoxdur");
+                break;
+            }
+            int newAge = GettAge();
+            decimal newGrade = GettGrade();
+            string newStudentSurname = GettSurname();
+            string newStudentName = GettName();
+            int newGroupId = GetGroupId(context);
+            context.SaveChanges();
+            Console.WriteLine("Student Ugurla deyisdirildi.");
+            break;
         default:
             break;
-    } 
+    }
     goto EVVEL;
 }
 static void AllGroups(AppDbConext context)
